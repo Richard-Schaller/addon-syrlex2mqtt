@@ -1,3 +1,3 @@
 [submodule "rootfs/syrlex2mqtt"]
-	path = rootfs/syrlex2mqtt
+	path = addon-syrlex2mqtt/rootfs/syrlex2mqtt
 	url = https://github.com/Richard-Schaller/syrlex2mqtt
