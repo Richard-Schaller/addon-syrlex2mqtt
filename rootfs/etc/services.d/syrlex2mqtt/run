@@ -1,0 +1,49 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Home Assistant Community Add-on: syrlex2mqtt
+# Starts syrlex2mqtt
+# ==============================================================================
+declare -a options
+
+bashio::log.info 'Starting syrlex2mqtt...'
+
+port=$(bashio::addon.port 22)
+
+# Load configuration into environment variables
+for var in VERBOSE_LOGGING ADDITIONAL_PROPERTIES; do
+  if bashio::config.has_value ${var,,}; then
+    value=$(bashio::config ${var,,})
+    bashio::log.info "Setting ${var} to ${value}"
+    export "${var}=${value}"
+  fi
+done
+
+# Load ports into environment variables
+export "HTTP_PORT=$(bashio::addon.port 80)"
+bashio::log.info "Setting HTTP_PORT to $(bashio::addon.port 80)"
+export "HTTPS_PORT=$(bashio::addon.port 443)"
+bashio::log.info "Setting HTTPS_PORT to $(bashio::addon.port 443)"
+
+if ! bashio::services.available "mqtt" && ! bashio::config.exists 'mqtt.server'; then
+    bashio::exit.nok "No internal MQTT service found and no MQTT server defined. Please install Mosquitto broker or specify your own."
+else
+    bashio::log.info "MQTT available, fetching server detail ..."
+    if ! bashio::config.exists 'mqtt.server'; then
+        bashio::log.info "MQTT server settings not configured, attempting auto-discovery..."
+        MQTT_PREFIX="mqtt://"
+        if [ $(bashio::services mqtt "ssl") = true ]; then
+            MQTT_PREFIX="mqtts://"
+        fi
+        export MQTT_SERVER="${MQTT_PREFIX}$(bashio::services mqtt "host"):$(bashio::services mqtt "port")"
+        bashio::log.info "Configuring '${MQTT_SERVER}' mqtt server"
+    fi
+    if ! bashio::config.exists 'mqtt.user'; then
+        bashio::log.info "MQTT credentials not configured, attempting auto-discovery..."
+        export MQTT_USER=$(bashio::services mqtt "username")
+        export MQTT_PASSWORD=$(bashio::services mqtt "password")
+        bashio::log.info "Configuring '${MQTT_USER}' mqtt user"
+    fi
+fi
+
+# Run the Warema WMS bridge
+exec node /syrlex2mqtt/syrlex2mqtt.js
