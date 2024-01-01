@@ -15,8 +15,8 @@ For supported devices see [https://github.com/Richard-Schaller/syrlex2mqtt](http
 Setting up this software involves multiple steps:
 
 - Find out the IP of your Home Assistant Server. For the following example we will assume it is 192.168.178.42.
-- Install and start this add-on. For a first set up you may want to enable verbose logging.
 - Install and start the add-on `Mosquitto broker`
+- Install and start this add-on (addon-syrlex2mqtt). For a first set up you may want to enable verbose logging.
 - Next, a DNS server needs to be installed: Therefore install the Home Assistant add-on `Dnsmasq`. In the configuration tab of Dnsmasq, enable `Log Queries` and put the following under `Hosts`; replace 192.168.178.42 with the IP of your Home Assistant Server:
 ```
 - host: connect.saocal.pl
