@@ -1,0 +1,1 @@
+addon-syrlex2mqtt/README.md
