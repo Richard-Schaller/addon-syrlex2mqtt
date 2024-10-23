@@ -1,6 +1,6 @@
 name: "syrlex2mqtt"
 description: "syrlex2mqtt simulates the SyrConnect cloud and makes the SYR water softening units of the LEX Plus series available via MQTT"
-version: "0.2.0"
+version: "0.2.1"
 slug: "syrlex2mqtt"
 init: false
 startup: services
